@@ -1844,7 +1844,7 @@ var USE_OFFSET_CONVERTER = 0;
 // doesn't know which symbols might be defined in JS so reporting of undefined
 // symbols is delayed until the JS compiler is run.
 // [link]
-var LLD_REPORT_UNDEFINED = 0;
+var LLD_REPORT_UNDEFINED = 1;
 
 // Default to c++ mode even when run as `emcc` rather then `emc++`.
 // When this is disabled `em++` is required when compiling and linking C++

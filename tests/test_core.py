@@ -8743,8 +8743,7 @@ NODEFS is no longer included by default; build with -lnodefs.js
       # In standalone we don't support implicitly building without main.  The user has to explicitly
       # opt out (see below).
       err = self.expect_fail([EMCC, test_file('core/test_ctors_no_main.cpp')] + self.get_emcc_args())
-      self.assertContained('error: undefined symbol: main (referenced by top-level compiled C/C++ code)', err)
-      self.assertContained('warning: To build in STANDALONE_WASM mode without a main(), use emcc --no-entry', err)
+      self.assertContained('undefined symbol: main', err)
     elif not self.get_setting('LLD_REPORT_UNDEFINED') and not self.get_setting('STRICT'):
       # Traditionally in emscripten we allow main to be implicitly undefined.  This allows programs
       # with a main and libraries without a main to be compiled identically.
@@ -8763,6 +8762,9 @@ NODEFS is no longer included by default; build with -lnodefs.js
       self.do_core_test('test_ctors_no_main.cpp')
       self.clear_setting('EXPORTED_FUNCTIONS')
 
+  # Marked as impure since the WASI reactor modules (modules without main)
+  # are not yet suppored by the wasm engines we test against.
+  @also_with_standalone_wasm(impure=True)
   def test_undefined_main_explict(self):
     # If we pass --no-entry this test should compile without issue
     self.emcc_args.append('--no-entry')

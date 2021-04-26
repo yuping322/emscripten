@@ -1404,7 +1404,10 @@ LibraryManager.library = {
 #endif
   // will never be emitted, as the dep errors at compile time
   longjmp: function(env, value) {
-    abort('longjmp not supported');
+    abort('longjmp not supported (build with -s SUPPORT_LONGJMP)');
+  },
+  setjmp: function(env) {
+    abort('setjmp not support (build with -s SUPPORT_LONGJMP)');
   },
   setjmp: function(env, value) {
     abort('setjmp not supported');

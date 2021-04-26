@@ -767,6 +767,7 @@ def emsdk_ldflags(user_args):
   ldflags = [f'-L{l}' for l in library_paths]
 
   if '-nostdlib' in user_args:
+    settings.NATIVE_STDLIB = 0
     return ldflags
 
   return ldflags
@@ -1582,7 +1583,7 @@ def phase_linker_setup(options, state, newargs, settings_map):
         settings.EXPECT_MAIN = 0
     else:
       assert not settings.EXPORTED_FUNCTIONS
-      settings.EXPORTED_FUNCTIONS = ['_main']
+      settings.EXPORT_IF_DEFINED.append('_main')
 
   if settings.STANDALONE_WASM:
     # In STANDALONE_WASM mode we either build a command or a reactor.
@@ -1605,10 +1606,7 @@ def phase_linker_setup(options, state, newargs, settings_map):
     if not settings.PURE_WASI and '-nostdlib' not in newargs and '-nodefaultlibs' not in newargs:
       default_setting('STACK_OVERFLOW_CHECK', max(settings.ASSERTIONS, settings.STACK_OVERFLOW_CHECK))
 
-  if settings.LLD_REPORT_UNDEFINED or settings.STANDALONE_WASM:
-    # Reporting undefined symbols at wasm-ld time requires us to know if we have a `main` function
-    # or not, as does standalone wasm mode.
-    # TODO(sbc): Remove this once this becomes the default
+  if settings.STANDALONE_WASM:
     settings.IGNORE_MISSING_MAIN = 0
 
   # For users that opt out of WARN_ON_UNDEFINED_SYMBOLS we assume they also

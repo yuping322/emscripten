@@ -1917,8 +1917,8 @@ int f() {
         print(proc.stderr)
         if value or action is None:
           # The default is that we error in undefined symbols
-          self.assertContained('error: undefined symbol: something', proc.stderr)
-          self.assertContained('error: undefined symbol: elsey', proc.stderr)
+          self.assertContained('undefined symbol: something', proc.stderr)
+          self.assertContained('undefined symbol: elsey', proc.stderr)
           check_success = False
         elif action == 'ERROR' and not value:
           # Error disables, should only warn
@@ -3176,11 +3176,12 @@ EMSCRIPTEN_KEEPALIVE int myreadSeekEnd() {
   def test_js_lib_quoted_key(self):
     create_file('lib.js', r'''
 mergeInto(LibraryManager.library, {
-   __internal_data:{
+  __internal_data:{
     '<' : 0,
     'white space' : 1
   },
-  printf__deps: ['__internal_data', 'fprintf']
+  foo__deps: ['__internal_data'],
+  foo: function() {}
 });
 ''')
 
@@ -6132,7 +6133,7 @@ int main() {
     err = self.expect_fail([EMCC, test_file('hello_world.c'),
                             '-s', 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=alGetError',
                             '-s', 'EXPORTED_FUNCTIONS=_main,_alGet'])
-    self.assertContained('undefined exported symbol: "_alGet"', err)
+    self.assertContained('error: symbol exported via --export not found: alGet', err)
 
   def test_musl_syscalls(self):
     self.run_process([EMCC, test_file('hello_world.c')])
@@ -8479,7 +8480,7 @@ _d
       # stray slash
       ('EXPORTED_FUNCTIONS=["_a", "_b",\\ "_c", "_d"]', 'undefined exported symbol: "\\\\ "_c"'),
       # missing comma
-      ('EXPORTED_FUNCTIONS=["_a", "_b" "_c", "_d"]', 'undefined exported symbol: "_b" "_c"'),
+      ('EXPORTED_FUNCTIONS=["_a", "_b" "_c", "_d"]', 'error: symbol exported via --export not found: b" "_c'),
     ]:
       print(export_arg)
       proc = self.run_process([EMCC, 'src.c', '-s', export_arg], stdout=PIPE, stderr=PIPE, check=not expected)
@@ -10630,7 +10631,7 @@ exec "$@"
 
     self.run_process([EMCC, side_src, '-sSIDE_MODULE=1', '-g', '-o', 'libhello.wasm'])
 
-    self.emcc_args += ['-g']
+    self.emcc_args += ['-g', 'libhello.wasm']
     self.emcc_args += ['-sMAIN_MODULE=2']
     self.emcc_args += ['-sEXPORTED_FUNCTIONS=_printf']
     self.emcc_args += ['-sSPLIT_MODULE=1', '-Wno-experimental']

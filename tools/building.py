@@ -347,8 +347,11 @@ def lld_flags_for_executable(external_symbols):
       if not settings.EXPECT_MAIN:
         cmd += ['--entry=_initialize']
     else:
-      if settings.EXPECT_MAIN and not settings.IGNORE_MISSING_MAIN:
-        cmd += ['--entry=main']
+      if settings.EXPECT_MAIN:
+        if settings.IGNORE_MISSING_MAIN:
+          cmd += ['--no-entry', '--export-if-defined=main']
+        else:
+          cmd += ['--entry=main']
       else:
         cmd += ['--no-entry']
     if not settings.ALLOW_MEMORY_GROWTH:

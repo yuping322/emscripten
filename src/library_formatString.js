@@ -468,6 +468,7 @@ mergeInto(LibraryManager.library, {
     return ret;
   },
 
+#if !NATIVE_STDLIB
   // printf/puts/strlen implementations for when musl is not pulled in - very
   // partial. useful for tests, and when bootstrapping structInfo
   strlen: function(ptr) {
@@ -499,5 +500,6 @@ mergeInto(LibraryManager.library, {
     out(string);
     return result.length;
   },
+#endif
 });
 

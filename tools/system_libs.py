@@ -1596,7 +1596,7 @@ def warn_on_unexported_main(symbolses):
   # In STANDALONE_WASM we don't expect main to be explictly exported
   if settings.STANDALONE_WASM:
     return
-  if '_main' not in settings.EXPORTED_FUNCTIONS:
+  if not settings.EXPECT_MAIN:
     for symbols in symbolses:
       if 'main' in symbols['defs']:
         logger.warning('main() is in the input files, but "_main" is not in EXPORTED_FUNCTIONS, which means it may be eliminated as dead code. Export it if you want main() to run.')

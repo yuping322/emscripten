@@ -224,3 +224,6 @@ var LINK_AS_CXX = 0;
 // minimum set of ES6 featurs.  This triggers transpilation to ES5
 // using closure compiler.
 var TRANSPILE_TO_ES5 = 0;
+
+// Gets set to zero by `-nostdlib`
+var NATIVE_STDLIB = 1;
