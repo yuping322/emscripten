@@ -5,15 +5,13 @@
  * found in the LICENSE file.
  */
 
+#include <assert.h>
 #include <stdio.h>
-#include <emscripten.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <string.h>
-
-int result = 1;
 
 int main() {
   int fd;
@@ -26,21 +24,21 @@ int main() {
 
   // a file whose contents are just 'az'
   if ((stat("/wakaka.txt", &st) != -1) || (errno != ENOENT))
-    result = -1000 - errno;
+    return -1000 - errno;
+
   fd = open("/wakaka.txt", O_RDWR | O_CREAT, 0666);
+  assert(fd >= 0);
   if (fd == -1)
-    result = -2000 - errno;
-  else
-  {
-    if (write(fd,"az",2) != 2)
-      result = -3000 - errno;
+    return -2000 - errno;
 
-    if (fsync(fd) != 0)
-      result = -4000 - errno;
+  if (write(fd,"az",2) != 2)
+    return -3000 - errno;
 
-    if (close(fd) != 0)
-      result = -5000 - errno;
-  }
+  if (fsync(fd) != 0)
+    return -4000 - errno;
 
-  REPORT_RESULT(result);
+  if (close(fd) != 0)
+    return -5000 - errno;
+
+  return 0;
 }
