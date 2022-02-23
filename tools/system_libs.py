@@ -1186,12 +1186,16 @@ class libcxxabi(NoExceptLibrary, MTLibrary):
     ]
     if self.eh_mode == Exceptions.NONE:
       filenames += ['cxa_noexception.cpp']
+    elif self.eh_mode == Exceptions.EMSCRIPTEN:
+      filenames += ['cxa_exception_emscripten.cpp']
     elif self.eh_mode == Exceptions.WASM:
       filenames += [
         'cxa_exception_storage.cpp',
         'cxa_exception.cpp',
         'cxa_personality.cpp'
       ]
+    else:
+      assert False
 
     return files_in_path(
         path='system/lib/libcxxabi/src',

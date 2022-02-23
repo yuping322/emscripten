@@ -174,13 +174,15 @@ function ${name}(${args}) {
             warn('To build in STANDALONE_WASM mode without a main(), use emcc --no-entry');
           }
         }
+        // We have already warned/errored about this function, so for the
+        // purposes of Closure use, mute all type checks regarding this
+        // function, marking as a variadic function that can take in anything
+        // and return anything.
+        // (not useful to warn/error multiple times)
+        LibraryManager.library[ident + '__docs'] = '/** @type {function(...*):?} */';
         if (!RELOCATABLE) {
           // emit a stub that will fail at runtime
           LibraryManager.library[ident] = new Function(`err('missing function: ${ident}'); abort(-1);`);
-          // We have already warned/errored about this function, so for the purposes of Closure use, mute all type checks
-          // regarding this function, marking ot a variadic function that can take in anything and return anything.
-          // (not useful to warn/error multiple times)
-          LibraryManager.library[ident + '__docs'] = '/** @type {function(...*):?} */';
         } else {
           const target = `Module['${finalName}']`;
           let assertion = '';

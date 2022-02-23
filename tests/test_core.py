@@ -1200,7 +1200,6 @@ int main()
 
   @no_asan('TODO: ASan support in minimal runtime')
   def test_exceptions_minimal_runtime(self):
-    self.set_setting('EXCEPTION_DEBUG')
     self.set_setting('EXIT_RUNTIME')
     self.maybe_closure()
     self.set_setting('MINIMAL_RUNTIME')
@@ -1211,6 +1210,7 @@ int main()
       self.set_setting('DISABLE_EXCEPTION_CATCHING', 0)
       self.do_run_from_file(test_file('core/test_exceptions.cpp'), test_file('core/test_exceptions_caught.out'))
 
+      self.set_setting('EXCEPTION_DEBUG')
       self.set_setting('DISABLE_EXCEPTION_CATCHING')
       self.do_run_from_file(test_file('core/test_exceptions.cpp'), test_file('core/test_exceptions_uncaught.out'), assert_returncode=NON_ZERO)
 
@@ -1545,8 +1545,8 @@ int main(int argc, char **argv)
 
   def test_format_exception(self):
     self.set_setting('DISABLE_EXCEPTION_CATCHING', 0)
-    self.set_setting('DEFAULT_LIBRARY_FUNCS_TO_INCLUDE', ['$formatException', '__cxa_decrement_exception_refcount', '__cxa_increment_exception_refcount'])
-    self.set_setting('EXPORTED_FUNCTIONS', ['_main', 'formatException', '_emscripten_format_exception', '_free'])
+    self.set_setting('DEFAULT_LIBRARY_FUNCS_TO_INCLUDE', ['$formatException'])
+    self.set_setting('EXPORTED_FUNCTIONS', ['_main', 'formatException', '_emscripten_format_exception', '_free', '___cxa_decrement_exception_refcount', '___cxa_increment_exception_refcount'])
     self.maybe_closure()
     src = '''
       #include <emscripten.h>
