@@ -35,6 +35,8 @@ See docs/process.md for more on how version tagging works.
   string to a boolean setting will now generate an error (e.g.
   `-sEXIT_RUNTIME=foo`).  Previously, the value of `foo` would have have been
   interpreted as non-zero and accepted as valid. (#16539)
+- Metadata extraction switched from wasm-emscripten-finalize to emscripten
+  python code.  This change should have no observable effect. (#16529)
 - A warning (limited-postlink-optimizations) was added that gets shown when
   binaryen optimizations are limited due to DWARF information being requested.
   Several binaryen passed are not compatible with the preservation of DWARF
