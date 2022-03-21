@@ -18,6 +18,7 @@ import signal
 import stat
 import sys
 import tempfile
+from typing import Optional
 
 # We depend on python 3.6 for fstring support
 if sys.version_info < (3, 6):
@@ -73,6 +74,9 @@ diagnostics.add_warning('unused-command-line-argument', shared=True)
 diagnostics.add_warning('pthreads-mem-growth')
 diagnostics.add_warning('transpile')
 diagnostics.add_warning('limited-postlink-optimizations')
+
+# Assigned by apply_configuration below
+configuration: Configuration = None
 
 
 # TODO(sbc): Investigate switching to shlex.quote
