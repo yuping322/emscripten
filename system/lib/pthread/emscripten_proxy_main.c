@@ -6,6 +6,7 @@
  */
 
 #include <pthread.h>
+#include <stdlib.h>
 
 #include <emscripten.h>
 #include <emscripten/stack.h>
@@ -14,12 +15,13 @@
 static int _main_argc;
 static char** _main_argv;
 
-extern void __call_main(int argc, char** argv);
+extern int main(int argc, char** argv);
 
 static void* _main_thread(void* param) {
   // This is the main runtime thread for the application.
   emscripten_set_thread_name(pthread_self(), "Application main thread");
-  __call_main(_main_argc, _main_argv);
+  int rtn = main(_main_argc, _main_argv);
+  exit(rtn);
   return NULL;
 }
 

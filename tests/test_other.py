@@ -11416,7 +11416,7 @@ EMSCRIPTEN_KEEPALIVE
 void foo() {}
 ''')
     err = self.expect_fail([EMCC, 'lib.cpp', '-pthread', '-sPROXY_TO_PTHREAD'])
-    self.assertContained('emcc: error: PROXY_TO_PTHREAD proxies main() for you, but no main exists', err)
+    self.assertContained('error: undefined symbol: main (referenced by top-level compiled C/C++ code)', err)
 
   def test_archive_bad_extension(self):
     # Regression test for https://github.com/emscripten-core/emscripten/issues/14012
